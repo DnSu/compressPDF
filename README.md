@@ -6,3 +6,8 @@
   * rename file with temporary file name
   * compress file back into the old name
   * delete temporary file
+# Run
+`php compress.php`
+
+# Dependencies
+* ghostscript
