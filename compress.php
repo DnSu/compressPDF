@@ -1,36 +1,39 @@
 <?php
-$backupFolder = './backup';
-iterFolder('./source', $backupFolder);
+require_once ('./configActual.php');
+if ($rcFolder) $srcFolder = './source';
+if ($backupFolder) $backupFolder = './backup';
 
-function iterFolder($folder, $backupFolder) {
-  //echo $folder."\n";
-  $files = scandir($folder);
+iterFolder($srcFolder, $backupFolder);
+
+function iterFolder($srcFolder, $backupFolder) {
+  //echo $srcFolder."\n";
+  $files = scandir($srcFolder);
   // print_r($files);
   $ageLimit = 86400 * 0; // 5 days
-  $ago = time() - filemtime($folder);
+  $ago = time() - filemtime($srcFolder);
+
   if ($ago > $ageLimit) {
     foreach($files as $file) {
       if ($file == '.' || $file == '..') continue;
-      if(is_dir($folder.'/'.$file)){
+      if(is_dir($srcFolder.'/'.$file)){
         if(!is_dir($backupFolder.'/'.$file)) mkdir($backupFolder.'/'.$file);
-        iterFolder($folder.'/'.$file, $backupFolder.'/'.$file);
+        iterFolder($srcFolder.'/'.$file, $backupFolder.'/'.$file);
       } else {
         if(!is_file($backupFolder.'/'.$file)){
           if(preg_match('/(pdf|PDF)$/', $file)) {
-            copy($folder.'/'.$file, $backupFolder.'/'.$file );
-            $dotPos = strrpos($folder.'/'.$file, '.');
-            // echo $dotPos;
-            $srcName = $folder.'/'.$file;
+            $dotPos = strrpos($srcFolder.'/'.$file, '.');
+            $srcName = $srcFolder.'/'.$file;
             $tmpName = substr($srcName, 0, $dotPos);
             $tmpName .= '_bk';
             $tmpName .= substr($srcName, $dotPos);
             // echo $tmpName."\n";
-            rename($srcName, $tmpName);
-            // echo $folder.'/'.$file."\n";
+            // echo $srcFolder.'/'.$file."\n";
             $cmd = 'gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.6 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="'.$srcName.'" "'.$tmpName.'"';
             echo $cmd."\n";
-            system($cmd);
-            unlink($tmpName);
+            // copy($srcName, $backupFolder.'/'.$file );
+            // rename($srcName, $tmpName);
+            // system($cmd);
+            // unlink($tmpName);
           }
         }
       }

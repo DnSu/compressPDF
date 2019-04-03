@@ -1,5 +1,5 @@
 <?php
-
-$src = './backup';
-$backup = './backup';
+// use absolute path
+$srcFolder = './source';
+$backupFolder = './backup';
 
