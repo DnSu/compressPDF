@@ -1,8 +1,8 @@
 <?php
 require_once ('./configActual.php');
-if ($rcFolder) $srcFolder = './source';
-if ($backupFolder) $backupFolder = './backup';
-if ($age) $age = 365;
+if (!isset($rcFolder)) die('source folder is required');
+if (!isset($backupFolder)) die('backup folder is required');
+if (!isset($age)) $age = 365;
 
 compress($srcFolder, $backupFolder, $age);
 
